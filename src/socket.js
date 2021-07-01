@@ -22,29 +22,28 @@ const kafka = new Kafka({
 const httpServer = createServer(app);
 const io = new SocketServer(httpServer);
 
-let data = {};
-
-const consumer = kafka.consumer({ groupId });
-
-const consume = async () => {
-  await consumer.connect()
-  await consumer.subscribe({ topic: POWER_TOPIC, fromBeginning: true })
- 
-  await consumer.run({
-    eachMessage: async ({ topic, partition, message }) => {
-      const measurement = JSON.parse(message.value.toString());
-      data = measurement
-      console.log(measurement);
-    },
-  })
-}
-
-consume().catch(e => console.log('Something went wrong :(', e))
-
 io.on('connection', async socket => {
-  console.log(`${socket.id} connected`);
-  
-  socket.emit('measurement', data)
+  console.log(`New client connected ${socket.id}`);
+
+  socket.on('disconnect', reason => {
+    console.log(`Client disconnected ${socket.id} for ${reason}`);
+  });
+
+  const consumer = kafka.consumer({ groupId });
+
+  const consume = async () => {
+    await consumer.connect()
+    await consumer.subscribe({ topic: POWER_TOPIC, fromBeginning: true })
+    
+    await consumer.run({
+      eachMessage: async ({ topic, partition, message }) => {
+        const measurement = JSON.parse(message.value.toString());
+        socket.emit('measurement', measurement);
+      },
+    })
+  }
+
+  consume().catch(e => console.log('Something went wrong :(', e))
 
 });
 
