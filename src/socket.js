@@ -3,15 +3,17 @@ import { createServer } from 'http';
 import { Server as SocketServer } from 'socket.io';
 import { Kafka, logLevel } from 'kafkajs';
 
-const SOCKET_IO_PORT = 33334
 const POWER_TOPIC = 'POWER_SENSORS';
 const groupId = 'POWER-GROUP-CONSUMER';
+
+const SOCKET_IO_PORT = process.env.SOCKET_IO_PORT || 33334;
+const KAFKA_BROKERS = process.env.KAFKA_BROKERS || 'localhost:9092';
 
 const app = express();
 
 const kafka = new Kafka({
   clientId: 'ELECKTRA-CONSUMER',
-  brokers: ['localhost:9092'],
+  brokers: [KAFKA_BROKERS],
   logLevel: logLevel.NOTHING,
 });
 
@@ -43,6 +45,7 @@ io.on('connection', async socket => {
     await consumer.run({
       eachMessage: async ({ topic, partition, message }) => {
         const measurement = JSON.parse(message.value.toString());
+        console.log(measurement);
         socket.emit('measurement', measurement);
         socket.broadcast.emit('measurement', measurement);
       },
