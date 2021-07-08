@@ -36,7 +36,6 @@ const consumer = kafka.consumer({ groupId })
 const initializeConsumer = async (consume: boolean) => {
   await consumer.connect()
     .then(() => console.log(`Consumer connected`))
-    .catch(() => console.log(`Consumer not connected`))
 
   await consumer.subscribe({ topic: POWER_TOPIC })
     .then(() => console.log(`Consumer subscribed`))
@@ -51,7 +50,7 @@ const initializeConsumer = async (consume: boolean) => {
   }
 }
 
-initializeConsumer(false)
+initializeConsumer(false).catch(error => console.log(`Consumer not connected, cause => ${error}`))
 
 io.on('connection', async socket => {
   console.log(`New client connected ${socket.id}`)
