@@ -1,4 +1,6 @@
+/build
 /node_modules
+nodemon.json
 Dockerfile
 
 .dockerignore
