@@ -5,10 +5,7 @@ import { Server as SocketServer } from 'socket.io'
 
 import { consumer } from './kafka/consumer'
 
-import dotenv from 'dotenv'
-dotenv.config()
-
-const SOCKET_IO_PORT = process.env.SOCKET_IO_PORT
+const SOCKET_IO_PORT = 33334
 
 const app = express()
 

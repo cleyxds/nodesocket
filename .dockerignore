@@ -1,8 +1,12 @@
 /build
 /node_modules
+
 nodemon.json
 Dockerfile
+LICENSE.md
+README.md
 
 .dockerignore
 .git
 .gitignore
+.env

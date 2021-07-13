@@ -1,8 +1,5 @@
 import { Kafka, logLevel } from 'kafkajs'
 
-import dotenv from 'dotenv'
-dotenv.config()
-
 const KAFKA_BROKERS = process.env.KAFKA_BROKERS
 
 const POWER_TOPIC = 'POWER_SENSORS'
@@ -11,6 +8,12 @@ const GROUP_ID = 'POWER-GROUP-CONSUMER'
 const kafka = new Kafka({
   brokers: [KAFKA_BROKERS],
   logLevel: logLevel.NOTHING,
+  sasl: {
+    mechanism: 'plain',
+    username: process.env.KAFKA_CLIENT_ID,
+    password: process.env.KAFKA_CLIENT_SECRET
+  },
+  ssl: true
 })
 
 export const consumer = kafka.consumer({ groupId: GROUP_ID })
