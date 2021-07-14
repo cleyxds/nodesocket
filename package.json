@@ -5,7 +5,8 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "sucrase src -d build --transforms imports,typescript",
-    "dev": "nodemon src/socket.ts"
+    "dev": "nodemon src/socket.ts",
+    "start": "node build/socket.js"
   },
   "dependencies": {
     "express": "^4.17.1",
